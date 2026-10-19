@@ -1,146 +1,498 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PulseScore — Mapping Console</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#0e0f14; --panel:#171821; --panel-2:#1d1f2a; --line:#2a2c38;
-    --gold:#d7a33e; --teal:#3fa7a1; --text:#ede9e1; --muted:#8a8b98; --danger:#c0564f;
-  }
-  *{box-sizing:border-box;}
-  html,body{height:100%;}
-  body{
-    margin:0; background:var(--bg); color:var(--text);
-    font-family:'Inter',system-ui,sans-serif; font-size:14px;
-    display:flex; min-height:100vh;
-  }
-  a{color:inherit;}
-  h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; margin:0;}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ScreenArchive — Mapping Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0f14;
+      --panel: #171821;
+      --panel-2: #1d1f2a;
+      --line: #2a2c38;
+      --gold: #d7a33e;
+      --teal: #3fa7a1;
+      --text: #ede9e1;
+      --muted: #8a8b98;
+      --danger: #c0564f;
+    }
 
-  /* ---------- Sidebar ---------- */
-  .rail{
-    width:240px; flex:none; background:var(--panel);
-    border-right:1px solid var(--line); display:flex; flex-direction:column;
-    padding:20px 16px;
-  }
-  .brand{font-size:19px; letter-spacing:.2px; margin-bottom:2px;}
-  .brand em{font-style:italic; color:var(--gold);}
-  .brand-sub{color:var(--muted); font-size:12px; margin-bottom:22px;}
-  .rail h3{font-size:11px; color:var(--muted); font-weight:500; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px;}
-  .universe-list{list-style:none; margin:0 0 16px; padding:0; display:flex; flex-direction:column; gap:3px; overflow-y:auto;}
-  .universe-list li{
-    padding:8px 10px; border-radius:7px; cursor:pointer; color:var(--muted);
-    display:flex; justify-content:space-between; align-items:center; gap:6px;
-  }
-  .universe-list li:hover{background:var(--panel-2); color:var(--text);}
-  .universe-list li.active{background:var(--panel-2); color:var(--text); box-shadow:inset 2px 0 0 var(--gold);}
-  .universe-list li span.count{font-size:11px; color:var(--muted);}
-  .new-universe{display:flex; gap:6px; margin-top:auto; padding-top:14px; border-top:1px solid var(--line);}
-  .new-universe input{flex:1; min-width:0;}
-  .rail-foot{margin-top:14px; display:flex; flex-direction:column; gap:8px;}
+    * {
+      box-sizing: border-box;
+    }
 
-  /* ---------- Inputs / buttons ---------- */
-  input, select{
-    background:var(--bg); border:1px solid var(--line); color:var(--text);
-    border-radius:7px; padding:8px 10px; font-family:inherit; font-size:13px; outline:none;
-  }
-  input:focus, select:focus{border-color:var(--gold);}
-  button{
-    background:var(--panel-2); border:1px solid var(--line); color:var(--text);
-    border-radius:7px; padding:8px 12px; font-family:inherit; font-size:13px; cursor:pointer;
-  }
-  button:hover{border-color:var(--gold);}
-  button.primary{background:var(--gold); border-color:var(--gold); color:#1a1300; font-weight:600;}
-  button.primary:hover{filter:brightness(1.08);}
-  button.ghost{background:transparent;}
-  button:disabled{opacity:.45; cursor:default;}
-  button:disabled:hover{border-color:var(--line);}
+    html,
+    body {
+      height: 100%;
+    }
 
-  /* ---------- Main ---------- */
-  .main{flex:1; display:flex; flex-direction:column; min-width:0;}
-  .topbar{
-    padding:18px 28px; border-bottom:1px solid var(--line);
-    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-  }
-  .topbar h2{font-size:20px;}
-  .topbar .meta{color:var(--muted); font-size:12px;}
-  .searchbar{display:flex; gap:8px; margin-left:auto; align-items:center;}
-  .searchbar input{width:220px;}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      display: flex;
+      min-height: 100vh;
+    }
 
-  .status{padding:6px 28px; font-size:12px; color:var(--muted); min-height:18px;}
-  .status.err{color:var(--danger);}
+    a {
+      color: inherit;
+    }
 
-  .results{
-    padding:0 28px 18px; display:flex; gap:10px; flex-wrap:wrap; border-bottom:1px solid var(--line);
-  }
-  .result-card{
-    background:var(--panel); border:1px solid var(--line); border-radius:9px;
-    padding:10px 12px; width:210px; display:flex; flex-direction:column; gap:6px;
-  }
-  .result-card .k{font-size:10px; letter-spacing:.06em; color:var(--teal);}
-  .result-card .n{font-family:'Fraunces',serif; font-size:14px; line-height:1.25;}
-  .result-card .d{font-size:11px; color:var(--muted);}
-  .result-card button{align-self:flex-start; margin-top:2px;}
+    h1,
+    h2,
+    h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      margin: 0;
+    }
 
-  .timeline-wrap{flex:1; overflow:auto; padding:34px 28px 50px;}
-  .empty{color:var(--muted); max-width:420px; line-height:1.6; margin-top:40px;}
-  .empty b{color:var(--text);}
+    /* ---------- Sidebar ---------- */
+    .rail {
+      width: 240px;
+      flex: none;
+      background: var(--panel);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+    }
 
-  .track{position:relative; display:flex; align-items:flex-start; gap:0; padding-top:6px;}
-  .node{
-    position:relative; width:220px; flex:none; padding:16px 16px 40px; margin-right:34px;
-  }
-  .node::before{
-    content:''; position:absolute; top:28px; left:-34px; width:34px; height:2px;
-    background:repeating-linear-gradient(90deg, var(--line) 0 5px, transparent 5px 9px);
-  }
-  .node:first-child::before{display:none;}
-  .node .order{
-    width:30px; height:30px; border-radius:50%; background:var(--panel-2); border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:13px;
-    color:var(--gold); margin-bottom:12px;
-  }
-  .node.watched .order{background:var(--teal); border-color:var(--teal); color:#07221f;}
-  .card{
-    background:var(--panel); border:1px solid var(--line); border-radius:11px; padding:14px;
-    display:flex; flex-direction:column; gap:8px;
-  }
-  .node.watched .card{border-color:rgba(63,167,161,.5);}
-  .card .k{font-size:10px; letter-spacing:.07em; color:var(--teal);}
-  .card .n{font-family:'Fraunces',serif; font-size:16px; line-height:1.3;}
-  .card .d{font-size:11px; color:var(--muted);}
-  .card .s{font-size:12px; color:var(--muted); line-height:1.5; max-height:4.5em; overflow:hidden;}
-  .card .watch-toggle{margin-top:4px; font-size:12px;}
-  .node.watched .watch-toggle{background:var(--teal); border-color:var(--teal); color:#07221f;}
+    .brand {
+      font-size: 19px;
+      letter-spacing: .2px;
+      margin-bottom: 2px;
+    }
 
-  .sources{padding:12px 28px; border-top:1px solid var(--line); display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-  .sources .label{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
-  .src-tag{font-size:11px; background:var(--panel-2); border:1px solid var(--line); border-radius:999px; padding:3px 9px; color:var(--muted);}
+    .brand em {
+      font-style: italic;
+      color: var(--gold);
+    }
 
-  ::-webkit-scrollbar{height:10px; width:10px;}
-  ::-webkit-scrollbar-thumb{background:var(--panel-2); border-radius:6px;}
-  ::-webkit-scrollbar-track{background:transparent;}
+    .brand-sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 22px;
+    }
 
-  @media (max-width:720px){
-    body{flex-direction:column;}
-    .rail{width:100%; border-right:none; border-bottom:1px solid var(--line); flex-direction:row; flex-wrap:wrap; align-items:center;}
-    .universe-list{flex-direction:row; flex-wrap:wrap; overflow:visible;}
-    .new-universe{margin-top:0;}
-    .searchbar{margin-left:0; width:100%;}
-    .searchbar input{flex:1; width:auto;}
-  }
-</style>
+    .rail h3 {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 10px;
+    }
+
+    .universe-list {
+      list-style: none;
+      margin: 0 0 16px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      overflow-y: auto;
+    }
+
+    .universe-list li {
+      padding: 8px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .universe-list li:hover {
+      background: var(--panel-2);
+      color: var(--text);
+    }
+
+    .universe-list li.active {
+      background: var(--panel-2);
+      color: var(--text);
+      box-shadow: inset 2px 0 0 var(--gold);
+    }
+
+    .universe-list li span.count {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .new-universe {
+      display: flex;
+      gap: 6px;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .new-universe input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rail-foot {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ---------- Inputs / buttons ---------- */
+    input,
+    select {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--gold);
+    }
+
+    button {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--gold);
+    }
+
+    button.primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #1a1300;
+      font-weight: 600;
+    }
+
+    button.primary:hover {
+      filter: brightness(1.08);
+    }
+
+    button.ghost {
+      background: transparent;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: default;
+    }
+
+    button:disabled:hover {
+      border-color: var(--line);
+    }
+
+    /* ---------- Main ---------- */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .topbar h2 {
+      font-size: 20px;
+    }
+
+    .topbar .meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .searchbar {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+      align-items: center;
+    }
+
+    .searchbar input {
+      width: 220px;
+    }
+
+    .status {
+      padding: 6px 28px;
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 18px;
+    }
+
+    .status.err {
+      color: var(--danger);
+    }
+
+    .results {
+      padding: 0 28px 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .result-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 10px 12px;
+      width: 210px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .result-card .k {
+      font-size: 10px;
+      letter-spacing: .06em;
+      color: var(--teal);
+    }
+
+    .result-card .n {
+      font-family: 'Fraunces', serif;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .result-card .d {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .result-card button {
+      align-self: flex-start;
+      margin-top: 2px;
+    }
+
+    .timeline-wrap {
+      flex: 1;
+      overflow: auto;
+      padding: 34px 28px 50px;
+    }
+
+    .empty {
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.6;
+      margin-top: 40px;
+    }
+
+    .empty b {
+      color: var(--text);
+    }
+
+    .track {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      padding-top: 6px;
+    }
+
+    .node {
+      position: relative;
+      width: 220px;
+      flex: none;
+      padding: 16px 16px 40px;
+      margin-right: 34px;
+    }
+
+    .node::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: -34px;
+      width: 34px;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, var(--line) 0 5px, transparent 5px 9px);
+    }
+
+    .node:first-child::before {
+      display: none;
+    }
+
+    .node .order {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .node.watched .order {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #07221f;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .node.watched .card {
+      border-color: rgba(63, 167, 161, .5);
+    }
+
+    .card .k {
+      font-size: 10px;
+      letter-spacing: .07em;
+      color: var(--teal);
+    }
+
+    .card .n {
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .card .d {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .card .s {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-height: 4.5em;
+      overflow: hidden;
+    }
+
+    .card .watch-toggle {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .node.watched .watch-toggle {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #07221f;
+    }
+
+    .sources {
+      padding: 12px 28px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .sources .label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .src-tag {
+      font-size: 11px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 9px;
+      color: var(--muted);
+    }
+
+    ::-webkit-scrollbar {
+      height: 10px;
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--panel-2);
+      border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    @media (max-width:720px) {
+      body {
+        flex-direction: column;
+      }
+
+      .rail {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .universe-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        overflow: visible;
+      }
+
+      .new-universe {
+        margin-top: 0;
+      }
+
+      .searchbar {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .searchbar input {
+        flex: 1;
+        width: auto;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
   <aside class="rail">
     <div>
-      <div class="brand">Pulse<em>Score</em></div>
+      <div class="brand">Screen<em>Archive</em></div>
       <div class="brand-sub">mapping console</div>
     </div>
     <h3>Universes</h3>
@@ -150,7 +502,8 @@
       <button class="primary" id="createUniverseBtn">Add</button>
     </div>
     <div class="rail-foot">
-      <button class="ghost" id="refreshBtn" title="Re-check tracked franchises for new releases">Refresh franchises</button>
+      <button class="ghost" id="refreshBtn" title="Re-check tracked franchises for new releases">Refresh
+        franchises</button>
     </div>
   </aside>
 
@@ -192,109 +545,109 @@
     </div>
   </main>
 
-<script>
-const $ = s => document.querySelector(s);
-let state = { universes: [] };
-let activeId = null;
+  <script>
+    const $ = s => document.querySelector(s);
+    let state = { universes: [] };
+    let activeId = null;
 
-async function api(path, opts) {
-  const res = await fetch(path, opts);
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
-  return data;
-}
+    async function api(path, opts) {
+      const res = await fetch(path, opts);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
+      return data;
+    }
 
-function setStatus(msg, isErr) {
-  const el = $('#status');
-  el.textContent = msg || '';
-  el.classList.toggle('err', !!isErr);
-}
+    function setStatus(msg, isErr) {
+      const el = $('#status');
+      el.textContent = msg || '';
+      el.classList.toggle('err', !!isErr);
+    }
 
-async function loadData() {
-  try {
-    state = await api('/api/data');
-    if (!activeId && state.universes[0]) activeId = state.universes[0].id;
-    renderAll();
-  } catch (e) {
-    setStatus(e.message, true);
-  }
-}
+    async function loadData() {
+      try {
+        state = await api('/api/data');
+        if (!activeId && state.universes[0]) activeId = state.universes[0].id;
+        renderAll();
+      } catch (e) {
+        setStatus(e.message, true);
+      }
+    }
 
-async function saveData() {
-  await api('/api/data', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(state)
-  });
-}
+    async function saveData() {
+      await api('/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+      });
+    }
 
-function activeUniverse() {
-  return state.universes.find(u => u.id === activeId) || null;
-}
+    function activeUniverse() {
+      return state.universes.find(u => u.id === activeId) || null;
+    }
 
-function renderAll() {
-  renderUniverseList();
-  renderTimeline();
-}
+    function renderAll() {
+      renderUniverseList();
+      renderTimeline();
+    }
 
-function renderUniverseList() {
-  const list = $('#universeList');
-  list.innerHTML = '';
-  state.universes.forEach(u => {
-    const li = document.createElement('li');
-    li.className = u.id === activeId ? 'active' : '';
-    li.innerHTML = `<span>${escapeHtml(u.name || 'Untitled')}</span><span class="count">${(u.items || []).length}</span>`;
-    li.onclick = () => { activeId = u.id; renderAll(); };
-    list.appendChild(li);
-  });
-}
+    function renderUniverseList() {
+      const list = $('#universeList');
+      list.innerHTML = '';
+      state.universes.forEach(u => {
+        const li = document.createElement('li');
+        li.className = u.id === activeId ? 'active' : '';
+        li.innerHTML = `<span>${escapeHtml(u.name || 'Untitled')}</span><span class="count">${(u.items || []).length}</span>`;
+        li.onclick = () => { activeId = u.id; renderAll(); };
+        list.appendChild(li);
+      });
+    }
 
-function renderTimeline() {
-  const u = activeUniverse();
-  const track = $('#track');
-  const empty = $('#emptyState');
-  const sourcesBar = $('#sourcesBar');
+    function renderTimeline() {
+      const u = activeUniverse();
+      const track = $('#track');
+      const empty = $('#emptyState');
+      const sourcesBar = $('#sourcesBar');
 
-  if (!u) {
-    $('#activeTitle').textContent = 'Select or create a universe';
-    $('#activeMeta').textContent = '';
-    track.style.display = 'none';
-    sourcesBar.style.display = 'none';
-    empty.style.display = 'block';
-    return;
-  }
+      if (!u) {
+        $('#activeTitle').textContent = 'Select or create a universe';
+        $('#activeMeta').textContent = '';
+        track.style.display = 'none';
+        sourcesBar.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
 
-  const items = [...(u.items || [])].sort((a, b) => (a.o || 0) - (b.o || 0));
-  $('#activeTitle').textContent = u.name || 'Untitled';
-  $('#activeMeta').textContent = items.length
-    ? items.length + ' title' + (items.length === 1 ? '' : 's') + ' mapped'
-    : 'No titles yet';
+      const items = [...(u.items || [])].sort((a, b) => (a.o || 0) - (b.o || 0));
+      $('#activeTitle').textContent = u.name || 'Untitled';
+      $('#activeMeta').textContent = items.length
+        ? items.length + ' title' + (items.length === 1 ? '' : 's') + ' mapped'
+        : 'No titles yet';
 
-  if (!items.length) {
-    track.style.display = 'none';
-    empty.style.display = 'block';
-  } else {
-    empty.style.display = 'none';
-    track.style.display = 'flex';
-    track.innerHTML = items.map(it => nodeHtml(it)).join('');
-    track.querySelectorAll('[data-toggle-watch]').forEach(btn => {
-      btn.onclick = () => toggleWatched(btn.getAttribute('data-toggle-watch'));
-    });
-  }
+      if (!items.length) {
+        track.style.display = 'none';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        track.style.display = 'flex';
+        track.innerHTML = items.map(it => nodeHtml(it)).join('');
+        track.querySelectorAll('[data-toggle-watch]').forEach(btn => {
+          btn.onclick = () => toggleWatched(btn.getAttribute('data-toggle-watch'));
+        });
+      }
 
-  if (u.sources && u.sources.length) {
-    sourcesBar.style.display = 'flex';
-    $('#sourceTags').innerHTML = u.sources.map(s =>
-      `<span class="src-tag">${escapeHtml(s.type)} · ${escapeHtml(String(s.id))}</span>`
-    ).join('');
-  } else {
-    sourcesBar.style.display = 'none';
-  }
-}
+      if (u.sources && u.sources.length) {
+        sourcesBar.style.display = 'flex';
+        $('#sourceTags').innerHTML = u.sources.map(s =>
+          `<span class="src-tag">${escapeHtml(s.type)} · ${escapeHtml(String(s.id))}</span>`
+        ).join('');
+      } else {
+        sourcesBar.style.display = 'none';
+      }
+    }
 
-function nodeHtml(it) {
-  const watched = !!it.w;
-  return `
+    function nodeHtml(it) {
+      const watched = !!it.w;
+      return `
     <div class="node ${watched ? 'watched' : ''}">
       <div class="order">${it.o ?? '–'}</div>
       <div class="card">
@@ -307,58 +660,58 @@ function nodeHtml(it) {
         </button>
       </div>
     </div>`;
-}
+    }
 
-async function toggleWatched(itemId) {
-  const u = activeUniverse();
-  if (!u) return;
-  const item = (u.items || []).find(i => i.id === itemId);
-  if (!item) return;
-  item.w = !item.w;
-  renderTimeline();
-  try { await saveData(); } catch (e) { setStatus(e.message, true); }
-}
+    async function toggleWatched(itemId) {
+      const u = activeUniverse();
+      if (!u) return;
+      const item = (u.items || []).find(i => i.id === itemId);
+      if (!item) return;
+      item.w = !item.w;
+      renderTimeline();
+      try { await saveData(); } catch (e) { setStatus(e.message, true); }
+    }
 
-async function createUniverse() {
-  const input = $('#newUniverseName');
-  const name = input.value.trim();
-  if (!name) return;
-  const newU = { id: 'u' + Date.now().toString(36), name, items: [], sources: [] };
-  state.universes.push(newU);
-  try {
-    await saveData();
-    activeId = newU.id;
-    input.value = '';
-    renderAll();
-    setStatus('Created "' + name + '".');
-  } catch (e) {
-    state.universes.pop();
-    setStatus(e.message, true);
-  }
-}
+    async function createUniverse() {
+      const input = $('#newUniverseName');
+      const name = input.value.trim();
+      if (!name) return;
+      const newU = { id: 'u' + Date.now().toString(36), name, items: [], sources: [] };
+      state.universes.push(newU);
+      try {
+        await saveData();
+        activeId = newU.id;
+        input.value = '';
+        renderAll();
+        setStatus('Created "' + name + '".');
+      } catch (e) {
+        state.universes.pop();
+        setStatus(e.message, true);
+      }
+    }
 
-async function runSearch() {
-  const src = $('#searchSrc').value;
-  const q = $('#searchQuery').value.trim();
-  const resultsEl = $('#results');
-  if (!q) { setStatus('Enter a search term.', true); return; }
-  setStatus('Searching…');
-  try {
-    const results = await api('/api/search?src=' + encodeURIComponent(src) + '&q=' + encodeURIComponent(q));
-    resultsEl.style.display = results.length ? 'flex' : 'none';
-    resultsEl.innerHTML = results.map(r => resultCardHtml(r, src)).join('');
-    resultsEl.querySelectorAll('[data-add]').forEach(btn => {
-      btn.onclick = () => addResult(JSON.parse(btn.getAttribute('data-add')), src);
-    });
-    setStatus(results.length ? results.length + ' result(s).' : 'No results.');
-  } catch (e) {
-    setStatus(e.message, true);
-  }
-}
+    async function runSearch() {
+      const src = $('#searchSrc').value;
+      const q = $('#searchQuery').value.trim();
+      const resultsEl = $('#results');
+      if (!q) { setStatus('Enter a search term.', true); return; }
+      setStatus('Searching…');
+      try {
+        const results = await api('/api/search?src=' + encodeURIComponent(src) + '&q=' + encodeURIComponent(q));
+        resultsEl.style.display = results.length ? 'flex' : 'none';
+        resultsEl.innerHTML = results.map(r => resultCardHtml(r, src)).join('');
+        resultsEl.querySelectorAll('[data-add]').forEach(btn => {
+          btn.onclick = () => addResult(JSON.parse(btn.getAttribute('data-add')), src);
+        });
+        setStatus(results.length ? results.length + ' result(s).' : 'No results.');
+      } catch (e) {
+        setStatus(e.message, true);
+      }
+    }
 
-function resultCardHtml(r, src) {
-  const isFranchise = src === 'collection' || src === 'animechain';
-  return `
+    function resultCardHtml(r, src) {
+      const isFranchise = src === 'collection' || src === 'animechain';
+      return `
     <div class="result-card">
       <div class="k">${isFranchise ? 'Franchise' : escapeHtml(r.k || src)}</div>
       <div class="n">${escapeHtml(r.n || 'Untitled')}</div>
@@ -367,52 +720,53 @@ function resultCardHtml(r, src) {
         ${isFranchise ? 'Add franchise' : 'Add title'}
       </button>
     </div>`;
-}
+    }
 
-async function addResult(r, src) {
-  const u = activeUniverse();
-  if (!u) { setStatus('Create or select a universe first.', true); return; }
-  const isFranchise = src === 'collection' || src === 'animechain';
-  setStatus(isFranchise ? 'Expanding franchise…' : 'Adding…');
-  try {
-    const body = isFranchise
-      ? { uid: u.id, source: { type: src, id: r.id } }
-      : { uid: u.id, items: [r] };
-    state = await api('/api/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    renderAll();
-    setStatus('Added to "' + u.name + '".');
-  } catch (e) {
-    setStatus(e.message, true);
-  }
-}
+    async function addResult(r, src) {
+      const u = activeUniverse();
+      if (!u) { setStatus('Create or select a universe first.', true); return; }
+      const isFranchise = src === 'collection' || src === 'animechain';
+      setStatus(isFranchise ? 'Expanding franchise…' : 'Adding…');
+      try {
+        const body = isFranchise
+          ? { uid: u.id, source: { type: src, id: r.id } }
+          : { uid: u.id, items: [r] };
+        state = await api('/api/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        renderAll();
+        setStatus('Added to "' + u.name + '".');
+      } catch (e) {
+        setStatus(e.message, true);
+      }
+    }
 
-async function refreshAll() {
-  setStatus('Refreshing tracked franchises…');
-  try {
-    state = await api('/api/refresh');
-    renderAll();
-    setStatus('Refreshed.');
-  } catch (e) {
-    setStatus(e.message, true);
-  }
-}
+    async function refreshAll() {
+      setStatus('Refreshing tracked franchises…');
+      try {
+        state = await api('/api/refresh');
+        renderAll();
+        setStatus('Refreshed.');
+      } catch (e) {
+        setStatus(e.message, true);
+      }
+    }
 
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
-function escapeAttr(s) { return escapeHtml(s).replace(/`/g, '&#96;'); }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function escapeAttr(s) { return escapeHtml(s).replace(/`/g, '&#96;'); }
 
-$('#createUniverseBtn').onclick = createUniverse;
-$('#newUniverseName').addEventListener('keydown', e => { if (e.key === 'Enter') createUniverse(); });
-$('#searchBtn').onclick = runSearch;
-$('#searchQuery').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
-$('#refreshBtn').onclick = refreshAll;
+    $('#createUniverseBtn').onclick = createUniverse;
+    $('#newUniverseName').addEventListener('keydown', e => { if (e.key === 'Enter') createUniverse(); });
+    $('#searchBtn').onclick = runSearch;
+    $('#searchQuery').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+    $('#refreshBtn').onclick = refreshAll;
 
-loadData();
-</script>
+    loadData();
+  </script>
 </body>
+
 </html>

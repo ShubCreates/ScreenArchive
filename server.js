@@ -1,5 +1,6 @@
 // Run:  TMDB_KEY=your_key node server.js     (Node 18+, no npm install needed)
 // Windows PowerShell:  $env:TMDB_KEY="your_key"; node server.js
+require('dotenv').config();
 const http = require('http'), fs = require('fs'), path = require('path');
 const KEY = process.env.TMDB_KEY || '', PORT = process.env.PORT || 3000;
 const DB = path.join(__dirname, 'universes.json');
@@ -76,6 +77,6 @@ http.createServer(async (req, res) => {
     }
     if (u.pathname == '/api/refresh') { await refresh(); return send(200, load()); }
     send(404, { error: 'Not found' });
-  } catch (e) { send(500, { error: e.message }); }
+  } catch (e) { console.error(e); send(500, { error: e.message }); }
 }).listen(PORT, () => console.log('Open http://localhost:' + PORT));
 setInterval(() => refresh().catch(console.error), 24 * 3600e3); // auto-update once a day
