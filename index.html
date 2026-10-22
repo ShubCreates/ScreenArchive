@@ -4,768 +4,622 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ScreenArchive — Mapping Console</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap"
+  <title>Screen Archive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap"
     rel="stylesheet">
   <style>
     :root {
-      --bg: #0e0f14;
-      --panel: #171821;
-      --panel-2: #1d1f2a;
-      --line: #2a2c38;
-      --gold: #d7a33e;
-      --teal: #3fa7a1;
-      --text: #ede9e1;
-      --muted: #8a8b98;
-      --danger: #c0564f;
+      --mint: #22f2a8;
+      --bg: #000;
+      --hero: #181818;
+      --card: #252628;
+      --row: #2d2e30;
+      --chip: #ececec;
+      --ph: #cbd2d9;
+      --tx: #fff;
+      --mu: #9a9da3
     }
 
     * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      height: 100%;
+      box-sizing: border-box
     }
 
     body {
       margin: 0;
       background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 14px;
-      display: flex;
-      min-height: 100vh;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    h1,
-    h2,
-    h3 {
-      font-family: 'Fraunces', serif;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    /* ---------- Sidebar ---------- */
-    .rail {
-      width: 240px;
-      flex: none;
-      background: var(--panel);
-      border-right: 1px solid var(--line);
-      display: flex;
-      flex-direction: column;
-      padding: 20px 16px;
-    }
-
-    .brand {
-      font-size: 19px;
-      letter-spacing: .2px;
-      margin-bottom: 2px;
-    }
-
-    .brand em {
-      font-style: italic;
-      color: var(--gold);
-    }
-
-    .brand-sub {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 22px;
-    }
-
-    .rail h3 {
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: 10px;
-    }
-
-    .universe-list {
-      list-style: none;
-      margin: 0 0 16px;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      overflow-y: auto;
-    }
-
-    .universe-list li {
-      padding: 8px 10px;
-      border-radius: 7px;
-      cursor: pointer;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .universe-list li:hover {
-      background: var(--panel-2);
-      color: var(--text);
-    }
-
-    .universe-list li.active {
-      background: var(--panel-2);
-      color: var(--text);
-      box-shadow: inset 2px 0 0 var(--gold);
-    }
-
-    .universe-list li span.count {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .new-universe {
-      display: flex;
-      gap: 6px;
-      margin-top: auto;
-      padding-top: 14px;
-      border-top: 1px solid var(--line);
-    }
-
-    .new-universe input {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .rail-foot {
-      margin-top: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    /* ---------- Inputs / buttons ---------- */
-    input,
-    select {
-      background: var(--bg);
-      border: 1px solid var(--line);
-      color: var(--text);
-      border-radius: 7px;
-      padding: 8px 10px;
-      font-family: inherit;
-      font-size: 13px;
-      outline: none;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--gold);
+      color: var(--tx);
+      font-family: Poppins, system-ui, sans-serif
     }
 
     button {
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      color: var(--text);
-      border-radius: 7px;
-      padding: 8px 12px;
       font-family: inherit;
-      font-size: 13px;
       cursor: pointer;
+      border: 0
     }
 
-    button:hover {
-      border-color: var(--gold);
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto
     }
 
-    button.primary {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: #1a1300;
-      font-weight: 600;
+    .hero {
+      background: var(--hero);
+      padding: 22px 24px 0;
+      text-align: center
     }
 
-    button.primary:hover {
-      filter: brightness(1.08);
-    }
-
-    button.ghost {
-      background: transparent;
-    }
-
-    button:disabled {
-      opacity: .45;
-      cursor: default;
-    }
-
-    button:disabled:hover {
-      border-color: var(--line);
-    }
-
-    /* ---------- Main ---------- */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .topbar {
-      padding: 18px 28px;
-      border-bottom: 1px solid var(--line);
+    .logo {
       display: flex;
       align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .topbar h2 {
-      font-size: 20px;
-    }
-
-    .topbar .meta {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .searchbar {
-      display: flex;
       gap: 8px;
-      margin-left: auto;
+      color: var(--mint);
+      font-weight: 700;
+      line-height: 1;
+      text-align: left;
+      font-size: 15px;
+      letter-spacing: .5px
+    }
+
+    h1 {
+      font-size: clamp(22px, 5vw, 32px);
+      margin: 14px 0 18px;
+      font-weight: 700
+    }
+
+    h1 i {
+      font-weight: 500
+    }
+
+    .avatar {
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      border: 5px solid var(--mint);
+      margin: 0 auto;
+      display: block;
+      background: var(--hero);
+      padding: 0;
+      overflow: hidden
+    }
+
+    .uname {
+      margin: 8px 0 0;
+      color: var(--mu);
+      font-size: 13px;
+      min-height: 20px
+    }
+
+    .sheetTop {
+      background: var(--bg);
+      border-radius: 48px 48px 0 0;
+      margin: 6px -24px 0;
+      padding: 34px 24px 20px
+    }
+
+    .search {
+      display: flex;
+      background: #ececec;
+      border-radius: 999px;
+      padding: 0 6px 0 22px;
       align-items: center;
+      max-width: 640px;
+      margin: 0 auto
     }
 
-    .searchbar input {
-      width: 220px;
+    .search input {
+      flex: 1;
+      border: 0;
+      background: none;
+      font: inherit;
+      padding: 15px 0;
+      outline: none;
+      color: #111;
+      min-width: 0
     }
 
-    .status {
-      padding: 6px 28px;
+    .search select {
+      border: 0;
+      background: #d9d9d9;
+      border-radius: 999px;
+      padding: 9px 10px;
+      font: inherit;
+      font-size: 13px;
+      color: #111
+    }
+
+    .search button {
+      background: var(--mint);
+      color: #04261a;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 10px 18px;
+      margin-left: 6px
+    }
+
+    .panel {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 24px;
+      margin: 16px 20px
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px
+    }
+
+    .panel h2 button {
+      background: none;
+      color: var(--mint);
+      font-size: 13px;
+      font-weight: 500
+    }
+
+    .row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scroll-snap-type: x proximity
+    }
+
+    .poster {
+      flex: none;
+      width: 130px;
+      height: 190px;
+      border-radius: 20px;
+      background: var(--ph) center/cover;
+      position: relative;
+      overflow: hidden;
+      scroll-snap-align: start;
+      color: #fff;
+      padding: 0;
+      text-align: left
+    }
+
+    .poster span {
+      position: absolute;
+      inset: auto 0 0;
+      padding: 26px 10px 9px;
       font-size: 12px;
-      color: var(--muted);
-      min-height: 18px;
+      font-weight: 600;
+      line-height: 1.25;
+      background: linear-gradient(transparent, rgba(0, 0, 0, .85))
     }
 
-    .status.err {
-      color: var(--danger);
+    .poster:hover {
+      outline: 2px solid var(--mint)
     }
 
-    .results {
-      padding: 0 28px 18px;
+    .hint {
+      color: var(--mu);
+      margin: 8px 0;
+      font-size: 14px
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px
+    }
+
+    .chip {
+      background: var(--chip);
+      color: #111;
+      border-radius: 14px;
+      padding: 6px 16px;
+      font-size: 16px
+    }
+
+    .chip.on {
+      background: var(--mint)
+    }
+
+    .menu {
+      background: var(--row);
+      border-radius: 28px;
+      margin: 16px 20px 40px;
+      overflow: hidden
+    }
+
+    .menu button {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      background: none;
+      color: #fff;
+      font-size: 21px;
+      font-weight: 600;
+      padding: 18px 20px;
+      border-bottom: 1px solid #1b1c1e;
+      text-align: left
+    }
+
+    .menu button:last-child {
+      border: 0
+    }
+
+    .menu button:hover {
+      background: #34353a
+    }
+
+    .menu .ic {
+      width: 44px;
+      text-align: center;
+      font-size: 30px;
+      flex: none
+    }
+
+    .menu .ic svg {
+      width: 40px;
+      height: 40px;
+      display: block;
+      margin: auto
+    }
+
+    .menu small {
+      margin-left: auto;
+      color: var(--mu);
+      font-size: 14px;
+      font-weight: 400
+    }
+
+    /* sheet */
+    .ov {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 9
+    }
+
+    .ov.on {
+      display: flex
+    }
+
+    .sh {
+      background: var(--card);
+      width: 100%;
+      max-width: 760px;
+      max-height: 88vh;
+      overflow-y: auto;
+      border-radius: 28px 28px 0 0;
+      padding: 22px 24px 30px
+    }
+
+    .sh header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 10px
+    }
+
+    .sh h3 {
+      margin: 0;
+      font-size: 22px
+    }
+
+    .x {
+      background: var(--row);
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 16px
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px
+    }
+
+    .meta {
+      color: var(--mint);
+      font-size: 13px;
+      margin: 0 0 8px
+    }
+
+    .btns {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      border-bottom: 1px solid var(--line);
+      margin-top: 16px
     }
 
-    .result-card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      padding: 10px 12px;
-      width: 210px;
+    .btn {
+      background: var(--row);
+      color: #fff;
+      border-radius: 14px;
+      padding: 11px 18px;
+      font-size: 15px;
+      font-weight: 500
+    }
+
+    .btn.pri {
+      background: var(--mint);
+      color: #04261a;
+      font-weight: 600
+    }
+
+    .dp {
+      float: left;
+      width: 110px;
+      border-radius: 16px;
+      margin: 0 16px 8px 0
+    }
+
+    .li {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      align-items: center;
+      gap: 12px;
+      background: var(--row);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 8px
     }
 
-    .result-card .k {
-      font-size: 10px;
-      letter-spacing: .06em;
-      color: var(--teal);
+    .li b {
+      font-weight: 600
     }
 
-    .result-card .n {
-      font-family: 'Fraunces', serif;
-      font-size: 14px;
-      line-height: 1.25;
+    .li small {
+      color: var(--mu);
+      display: block
     }
 
-    .result-card .d {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .result-card button {
-      align-self: flex-start;
-      margin-top: 2px;
-    }
-
-    .timeline-wrap {
-      flex: 1;
-      overflow: auto;
-      padding: 34px 28px 50px;
-    }
-
-    .empty {
-      color: var(--muted);
-      max-width: 420px;
-      line-height: 1.6;
-      margin-top: 40px;
-    }
-
-    .empty b {
-      color: var(--text);
-    }
-
-    .track {
-      position: relative;
-      display: flex;
-      align-items: flex-start;
-      gap: 0;
-      padding-top: 6px;
-    }
-
-    .node {
-      position: relative;
-      width: 220px;
-      flex: none;
-      padding: 16px 16px 40px;
-      margin-right: 34px;
-    }
-
-    .node::before {
-      content: '';
-      position: absolute;
-      top: 28px;
-      left: -34px;
-      width: 34px;
-      height: 2px;
-      background: repeating-linear-gradient(90deg, var(--line) 0 5px, transparent 5px 9px);
-    }
-
-    .node:first-child::before {
-      display: none;
-    }
-
-    .node .order {
+    .li .n {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
+      border: 1px solid #444;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Fraunces', serif;
-      font-size: 13px;
-      color: var(--gold);
-      margin-bottom: 12px;
+      color: var(--mint);
+      flex: none;
+      font-size: 13px
     }
 
-    .node.watched .order {
-      background: var(--teal);
-      border-color: var(--teal);
-      color: #07221f;
+    .li.w .n {
+      background: var(--mint);
+      color: #04261a;
+      border-color: var(--mint)
     }
 
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .li .grow {
+      flex: 1;
+      min-width: 0
     }
 
-    .node.watched .card {
-      border-color: rgba(63, 167, 161, .5);
+    .li button {
+      background: #3a3b40;
+      color: #fff;
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 13px
     }
 
-    .card .k {
-      font-size: 10px;
-      letter-spacing: .07em;
-      color: var(--teal);
-    }
-
-    .card .n {
-      font-family: 'Fraunces', serif;
-      font-size: 16px;
-      line-height: 1.3;
-    }
-
-    .card .d {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .card .s {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-      max-height: 4.5em;
-      overflow: hidden;
-    }
-
-    .card .watch-toggle {
-      margin-top: 4px;
-      font-size: 12px;
-    }
-
-    .node.watched .watch-toggle {
-      background: var(--teal);
-      border-color: var(--teal);
-      color: #07221f;
-    }
-
-    .sources {
-      padding: 12px 28px;
-      border-top: 1px solid var(--line);
+    .frm {
       display: flex;
       gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
+      margin: 14px 0
     }
 
-    .sources .label {
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .06em;
+    .frm input,
+    .frm select {
+      background: #111;
+      border: 1px solid #3a3b40;
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 14px;
+      min-width: 0
     }
 
-    .src-tag {
-      font-size: 11px;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
+    .frm input {
+      flex: 1
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #111;
+      padding: 10px 18px;
       border-radius: 999px;
-      padding: 3px 9px;
-      color: var(--muted);
+      font-size: 14px;
+      z-index: 20;
+      display: none
     }
 
-    ::-webkit-scrollbar {
-      height: 10px;
-      width: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--panel-2);
-      border-radius: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    @media (max-width:720px) {
-      body {
-        flex-direction: column;
-      }
-
-      .rail {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--line);
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-
-      .universe-list {
-        flex-direction: row;
-        flex-wrap: wrap;
-        overflow: visible;
-      }
-
-      .new-universe {
-        margin-top: 0;
-      }
-
-      .searchbar {
-        margin-left: 0;
-        width: 100%;
-      }
-
-      .searchbar input {
-        flex: 1;
-        width: auto;
-      }
+    .toast.err {
+      background: #ff6b6b
     }
   </style>
 </head>
 
 <body>
-
-  <aside class="rail">
-    <div>
-      <div class="brand">Screen<em>Archive</em></div>
-      <div class="brand-sub">mapping console</div>
-    </div>
-    <h3>Universes</h3>
-    <ul class="universe-list" id="universeList"></ul>
-    <div class="new-universe">
-      <input id="newUniverseName" placeholder="New universe name" maxlength="60">
-      <button class="primary" id="createUniverseBtn">Add</button>
-    </div>
-    <div class="rail-foot">
-      <button class="ghost" id="refreshBtn" title="Re-check tracked franchises for new releases">Refresh
-        franchises</button>
-    </div>
-  </aside>
-
-  <main class="main">
-    <div class="topbar">
-      <div>
-        <h2 id="activeTitle">Select or create a universe</h2>
-        <div class="meta" id="activeMeta"></div>
+  <div class="wrap">
+    <section class="hero">
+      <div class="logo">
+        <svg viewBox="0 0 40 34" width="44">
+          <rect x="2" y="12" width="36" height="20" rx="3" fill="none" stroke="#22f2a8" stroke-width="3" />
+          <path d="M3 11 8 2h8l-5 9zm12 0 5-9h8l-5 9zm12 0 5-9h4l-5 9z" fill="#22f2a8" />
+        </svg>
+        <span>SCREEN<br>ARCHIVE</span>
       </div>
-      <div class="searchbar">
-        <select id="searchSrc">
-          <option value="movie">Movie</option>
-          <option value="tv">TV</option>
-          <option value="anime">Anime</option>
-          <option value="collection">Movie franchise</option>
-          <option value="animechain">Anime franchise</option>
-        </select>
-        <input id="searchQuery" placeholder="Search titles or franchises…">
-        <button class="primary" id="searchBtn">Search</button>
+      <h1>WHAT DID YOU <i>watched</i> TODAY?</h1>
+      <button class="avatar" id="avatarBtn" title="Edit profile"><svg viewBox="0 0 100 100">
+          <circle cx="50" cy="38" r="20" fill="#22f2a8" />
+          <path d="M12 100c0-26 17-34 38-34s38 8 38 34z" fill="#22f2a8" />
+        </svg></button>
+      <p class="uname" id="uname"></p>
+      <div class="sheetTop">
+        <div class="search">
+          <input id="q" placeholder="Search for your movie" autocomplete="off">
+          <select id="src">
+            <option value="movie">Movies</option>
+            <option value="tv">TV</option>
+            <option value="anime">Anime</option>
+          </select>
+          <button id="go">Search</button>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="status" id="status"></div>
-    <div class="results" id="results" style="display:none;"></div>
+    <section class="panel">
+      <h2><span id="rowTitle">Trending Movies</span><button id="clear" style="display:none">✕ Clear</button></h2>
+      <div class="row" id="row"></div>
+      <h2 style="margin-top:26px">Choose genre</h2>
+      <div class="chips" id="chips"></div>
+    </section>
 
-    <div class="timeline-wrap">
-      <div class="empty" id="emptyState">
-        <b>No universe selected.</b><br>
-        Create one on the left, then search for a movie, show, anime, or whole franchise above to
-        start mapping a watch order. Adding a franchise (collection or anime chain) pulls in every
-        entry automatically and orders it by release date.
-      </div>
-      <div class="track" id="track" style="display:none;"></div>
-    </div>
+    <nav class="menu">
+      <button data-open="archive"><span class="ic">📚</span>Your archive<small id="cA"></small></button>
+      <button data-open="profile"><span class="ic"><svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="#22f2a8" opacity=".25" stroke="#22f2a8" stroke-width="6" />
+            <circle cx="50" cy="40" r="15" fill="#22f2a8" />
+            <path d="M22 80c0-16 12-22 28-22s28 6 28 22z" fill="#22f2a8" />
+          </svg></span>Edit Profile</button>
+      <button data-open="later"><span class="ic">🔖</span>Save later<small id="cL"></small></button>
+      <button data-open="timelines"><span class="ic">🎞️</span>Watch-order timelines</button>
+      <button data-open="refresh"><span class="ic">🔄</span>Refresh franchises</button>
+    </nav>
+  </div>
 
-    <div class="sources" id="sourcesBar" style="display:none;">
-      <span class="label">Tracked franchises</span>
-      <div id="sourceTags" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+  <div class="ov" id="ov">
+    <div class="sh">
+      <header>
+        <h3 id="shT"></h3><button class="x" id="shX">✕</button>
+      </header>
+      <div id="shB"></div>
     </div>
-  </main>
+  </div>
+  <div class="toast" id="toast"></div>
 
   <script>
-    const $ = s => document.querySelector(s);
-    let state = { universes: [] };
-    let activeId = null;
+    const $ = (s, r = document) => r.querySelector(s);
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    let S = { universes: [] }, cache = {};
+    const SYS = { archive: 'Your archive', later: 'Save later' };
+    const GENRES = ['Romcom', 'Comedy', 'Horror', 'Thriller', 'Mystery', 'Action', 'Sci-fi', 'Anime', 'Romance'];
 
-    async function api(path, opts) {
-      const res = await fetch(path, opts);
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
-      return data;
+    async function api(p, o) { const r = await fetch(p, o); const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || ('Error ' + r.status)); return d }
+    const post = (p, b) => api(p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) });
+    function toast(m, err) { const t = $('#toast'); t.textContent = m; t.className = 'toast' + (err ? ' err' : ''); t.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 2600) }
+    const uni = id => S.universes.find(u => u.id == id);
+    const has = (l, id) => !!uni(l)?.items.some(i => i.id == id);
+    async function ensure(id, name) { if (!uni(id)) { S.universes.push({ id, name, items: [], sources: [] }); await post('/api/data', S) } }
+    function counts() { $('#cA').textContent = (uni('archive')?.items.length || 0) || ''; $('#cL').textContent = (uni('later')?.items.length || 0) || '' }
+
+    const card = i => { cache[i.id] = i; return `<button class="poster" data-id="${esc(i.id)}" style="${i.p ? `background-image:url('${esc(i.p)}')` : ''}"><span>${esc(i.n)}</span></button>` };
+
+    async function fill(title, urls, fallback) {
+      $('#rowTitle').textContent = title; const row = $('#row'); row.innerHTML = '<p class="hint">Loading…</p>'; let last;
+      for (const u of urls) { try { const r = await api(u); row.innerHTML = r.length ? r.map(card).join('') : '<p class="hint">No results found.</p>'; return } catch (e) { last = e } }
+      row.innerHTML = `<p class="hint">${esc(fallback || last.message)}</p>`;
     }
+    const trending = () => { $('#clear').style.display = 'none'; document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); return fill('Trending Movies', ['/api/trending'], 'Search for a movie above to get started.') };
 
-    function setStatus(msg, isErr) {
-      const el = $('#status');
-      el.textContent = msg || '';
-      el.classList.toggle('err', !!isErr);
+    function search() {
+      const q = $('#q').value.trim(); if (!q) return trending();
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); $('#clear').style.display = '';
+      fill('Results for “' + q + '”', ['/api/search?src=' + $('#src').value + '&q=' + encodeURIComponent(q)]);
     }
+    $('#go').onclick = search; $('#q').onkeydown = e => { if (e.key == 'Enter') search() };
+    $('#clear').onclick = () => { $('#q').value = ''; trending() };
 
-    async function loadData() {
+    $('#chips').innerHTML = GENRES.map(g => `<button class="chip">${g}</button>`).join('');
+    $('#chips').onclick = e => {
+      const c = e.target.closest('.chip'); if (!c) return;
+      document.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x == c)); $('#clear').style.display = '';
+      const g = c.textContent, k = g.toLowerCase();
+      fill(g, ['/api/genre?g=' + encodeURIComponent(k), '/api/search?src=' + (k == 'anime' ? 'anime' : 'movie') + '&q=' + encodeURIComponent(g)])
+    };
+
+    /* sheet */
+    function openSheet(t, h) { $('#shT').textContent = t; $('#shB').innerHTML = h; $('#ov').classList.add('on') }
+    const closeSheet = () => $('#ov').classList.remove('on');
+    $('#shX').onclick = closeSheet; $('#ov').onclick = e => { if (e.target.id == 'ov') closeSheet() };
+
+    function detail(id) {
+      const i = cache[id]; if (!i) return; const a = has('archive', id), l = has('later', id);
+      openSheet(i.n, `${i.p ? `<img class="dp" src="${esc(i.p)}" alt="">` : ''}<p class="meta">${esc(i.k || '')} ${i.date ? '· ' + esc(i.date) : ''}</p><p>${esc(i.s || 'No synopsis available.')}</p>
+  <div class="btns" style="clear:both"><button class="btn pri" data-tog="archive" data-id="${esc(id)}">${a ? '✓ In archive · remove' : '＋ Add to archive'}</button>
+  <button class="btn" data-tog="later" data-id="${esc(id)}">${l ? '✓ Saved · remove' : '🔖 Save later'}</button></div>`);
+    }
+    async function toggle(list, id) {
+      const i = cache[id]; if (!i) return;
       try {
-        state = await api('/api/data');
-        if (!activeId && state.universes[0]) activeId = state.universes[0].id;
-        renderAll();
-      } catch (e) {
-        setStatus(e.message, true);
-      }
+        if (has(list, id)) { const u = uni(list); u.items = u.items.filter(x => x.id != id); await post('/api/data', S); toast('Removed') }
+        else { await ensure(list, SYS[list]); S = await post('/api/add', { uid: list, items: [i] }); toast('Added to ' + SYS[list].toLowerCase()) }
+        counts(); detail(id);
+      } catch (e) { toast(e.message, 1) }
     }
 
-    async function saveData() {
-      await api('/api/data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(state)
-      });
+    function listView(list) {
+      const items = [...(uni(list)?.items || [])].reverse();
+      openSheet(SYS[list], items.length ? `<div class="grid">${items.map(card).join('')}</div>` : `<p class="hint">Nothing here yet. Open any movie and tap “${list == 'archive' ? 'Add to archive' : 'Save later'}”.</p>`);
     }
 
-    function activeUniverse() {
-      return state.universes.find(u => u.id === activeId) || null;
+    function profileView() {
+      let n = ''; try { n = localStorage.getItem('sa_name') || '' } catch { }
+      openSheet('Edit Profile', `<div class="frm"><input id="pn" placeholder="Your name" maxlength="30" value="${esc(n)}"><button class="btn pri" id="ps">Save</button></div>`);
+      $('#ps').onclick = () => { const v = $('#pn').value.trim(); try { localStorage.setItem('sa_name', v) } catch { } showName(); closeSheet(); toast('Profile saved') };
+    }
+    function showName() { let n = ''; try { n = localStorage.getItem('sa_name') || '' } catch { } $('#uname').textContent = n ? 'Hi, ' + n : '' }
+
+    function timelinesView() {
+      const us = S.universes.filter(u => !SYS[u.id]);
+      openSheet('Watch-order timelines', `${us.map(u => `<div class="li"><div class="grow"><b>${esc(u.name)}</b><small>${u.items.length} titles</small></div><button data-tl="${esc(u.id)}">Open</button></div>`).join('') || '<p class="hint">No timelines yet — create one below (e.g. “Marvel”).</p>'}
+  <div class="frm"><input id="tn" placeholder="New timeline name" maxlength="60"><button class="btn pri" id="tc">Create</button></div>`);
+      $('#tc').onclick = async () => { const n = $('#tn').value.trim(); if (!n) return; try { S.universes.push({ id: 'u' + Date.now().toString(36), name: n, items: [], sources: [] }); await post('/api/data', S); timelinesView() } catch (e) { toast(e.message, 1) } };
+    }
+    function timelineView(uid) {
+      const u = uni(uid); if (!u) return; const items = [...u.items].sort((a, b) => (a.o || 0) - (b.o || 0));
+      openSheet(u.name, `<button class="btn" data-back>← All timelines</button>
+  <div class="frm"><select id="ft"><option value="collection">Movie franchise</option><option value="animechain">Anime franchise</option></select><input id="fq" placeholder="Search a franchise (e.g. Avengers)"><button class="btn pri" id="fg">Find</button></div>
+  <div id="fr"></div>
+  ${items.map(i => `<div class="li ${i.w ? 'w' : ''}"><div class="n">${i.o}</div><div class="grow"><b>${esc(i.n)}</b><small>${esc(i.k || '')} ${i.y || ''}</small></div><button data-w="${esc(i.id)}" data-u="${esc(uid)}">${i.w ? '✓ Watched' : 'Mark watched'}</button></div>`).join('') || '<p class="hint">Empty. Find a franchise above and add it to build the watch order.</p>'}`);
+      $('#fg').onclick = async () => {
+        const q = $('#fq').value.trim(); if (!q) return; $('#fr').innerHTML = '<p class="hint">Searching…</p>';
+        try {
+          const r = await api('/api/search?src=' + $('#ft').value + '&q=' + encodeURIComponent(q));
+          $('#fr').innerHTML = r.map(f => `<div class="li"><div class="grow"><b>${esc(f.n)}</b><small>${esc(f.s || '').slice(0, 80)}</small></div><button data-add="${esc(f.id)}" data-type="${esc($('#ft').value)}" data-u="${esc(uid)}">Add all</button></div>`).join('') || '<p class="hint">No results.</p>'
+        }
+        catch (e) { $('#fr').innerHTML = `<p class="hint">${esc(e.message)}</p>` }
+      };
     }
 
-    function renderAll() {
-      renderUniverseList();
-      renderTimeline();
-    }
+    document.addEventListener('click', async e => {
+      const t = e.target.closest('button'); if (!t) return;
+      if (t.classList.contains('poster')) return detail(t.dataset.id);
+      if (t.dataset.tog) return toggle(t.dataset.tog, t.dataset.id);
+      if (t.dataset.tl) return timelineView(t.dataset.tl);
+      if ('back' in t.dataset) return timelinesView();
+      if (t.dataset.w) { const it = uni(t.dataset.u).items.find(x => x.id == t.dataset.w); it.w = !it.w; try { await post('/api/data', S) } catch (x) { toast(x.message, 1) } return timelineView(t.dataset.u) }
+      if (t.dataset.add) { t.textContent = 'Adding…'; try { S = await post('/api/add', { uid: t.dataset.u, source: { type: t.dataset.type, id: t.dataset.add } }); timelineView(t.dataset.u); toast('Franchise added') } catch (x) { toast(x.message, 1); t.textContent = 'Add all' } return }
+      const o = t.dataset.open; if (!o && t.id != 'avatarBtn') return;
+      if (o == 'archive' || o == 'later') return listView(o);
+      if (o == 'profile' || t.id == 'avatarBtn') return profileView();
+      if (o == 'timelines') return timelinesView();
+      if (o == 'refresh') { toast('Refreshing franchises…'); try { S = await api('/api/refresh'); counts(); toast('Franchises up to date') } catch (x) { toast(x.message, 1) } }
+    });
 
-    function renderUniverseList() {
-      const list = $('#universeList');
-      list.innerHTML = '';
-      state.universes.forEach(u => {
-        const li = document.createElement('li');
-        li.className = u.id === activeId ? 'active' : '';
-        li.innerHTML = `<span>${escapeHtml(u.name || 'Untitled')}</span><span class="count">${(u.items || []).length}</span>`;
-        li.onclick = () => { activeId = u.id; renderAll(); };
-        list.appendChild(li);
-      });
-    }
-
-    function renderTimeline() {
-      const u = activeUniverse();
-      const track = $('#track');
-      const empty = $('#emptyState');
-      const sourcesBar = $('#sourcesBar');
-
-      if (!u) {
-        $('#activeTitle').textContent = 'Select or create a universe';
-        $('#activeMeta').textContent = '';
-        track.style.display = 'none';
-        sourcesBar.style.display = 'none';
-        empty.style.display = 'block';
-        return;
-      }
-
-      const items = [...(u.items || [])].sort((a, b) => (a.o || 0) - (b.o || 0));
-      $('#activeTitle').textContent = u.name || 'Untitled';
-      $('#activeMeta').textContent = items.length
-        ? items.length + ' title' + (items.length === 1 ? '' : 's') + ' mapped'
-        : 'No titles yet';
-
-      if (!items.length) {
-        track.style.display = 'none';
-        empty.style.display = 'block';
-      } else {
-        empty.style.display = 'none';
-        track.style.display = 'flex';
-        track.innerHTML = items.map(it => nodeHtml(it)).join('');
-        track.querySelectorAll('[data-toggle-watch]').forEach(btn => {
-          btn.onclick = () => toggleWatched(btn.getAttribute('data-toggle-watch'));
-        });
-      }
-
-      if (u.sources && u.sources.length) {
-        sourcesBar.style.display = 'flex';
-        $('#sourceTags').innerHTML = u.sources.map(s =>
-          `<span class="src-tag">${escapeHtml(s.type)} · ${escapeHtml(String(s.id))}</span>`
-        ).join('');
-      } else {
-        sourcesBar.style.display = 'none';
-      }
-    }
-
-    function nodeHtml(it) {
-      const watched = !!it.w;
-      return `
-    <div class="node ${watched ? 'watched' : ''}">
-      <div class="order">${it.o ?? '–'}</div>
-      <div class="card">
-        <div class="k">${escapeHtml(it.k || '')}</div>
-        <div class="n">${escapeHtml(it.n || 'Untitled')}</div>
-        <div class="d">${it.y ? it.y : (it.date || 'Date unknown')}</div>
-        ${it.s ? `<div class="s">${escapeHtml(it.s)}</div>` : ''}
-        <button class="watch-toggle" data-toggle-watch="${escapeAttr(it.id)}">
-          ${watched ? '✓ Watched' : 'Mark watched'}
-        </button>
-      </div>
-    </div>`;
-    }
-
-    async function toggleWatched(itemId) {
-      const u = activeUniverse();
-      if (!u) return;
-      const item = (u.items || []).find(i => i.id === itemId);
-      if (!item) return;
-      item.w = !item.w;
-      renderTimeline();
-      try { await saveData(); } catch (e) { setStatus(e.message, true); }
-    }
-
-    async function createUniverse() {
-      const input = $('#newUniverseName');
-      const name = input.value.trim();
-      if (!name) return;
-      const newU = { id: 'u' + Date.now().toString(36), name, items: [], sources: [] };
-      state.universes.push(newU);
-      try {
-        await saveData();
-        activeId = newU.id;
-        input.value = '';
-        renderAll();
-        setStatus('Created "' + name + '".');
-      } catch (e) {
-        state.universes.pop();
-        setStatus(e.message, true);
-      }
-    }
-
-    async function runSearch() {
-      const src = $('#searchSrc').value;
-      const q = $('#searchQuery').value.trim();
-      const resultsEl = $('#results');
-      if (!q) { setStatus('Enter a search term.', true); return; }
-      setStatus('Searching…');
-      try {
-        const results = await api('/api/search?src=' + encodeURIComponent(src) + '&q=' + encodeURIComponent(q));
-        resultsEl.style.display = results.length ? 'flex' : 'none';
-        resultsEl.innerHTML = results.map(r => resultCardHtml(r, src)).join('');
-        resultsEl.querySelectorAll('[data-add]').forEach(btn => {
-          btn.onclick = () => addResult(JSON.parse(btn.getAttribute('data-add')), src);
-        });
-        setStatus(results.length ? results.length + ' result(s).' : 'No results.');
-      } catch (e) {
-        setStatus(e.message, true);
-      }
-    }
-
-    function resultCardHtml(r, src) {
-      const isFranchise = src === 'collection' || src === 'animechain';
-      return `
-    <div class="result-card">
-      <div class="k">${isFranchise ? 'Franchise' : escapeHtml(r.k || src)}</div>
-      <div class="n">${escapeHtml(r.n || 'Untitled')}</div>
-      <div class="d">${escapeHtml(r.date || (isFranchise ? 'Adds every entry' : 'Date unknown'))}</div>
-      <button data-add='${escapeAttr(JSON.stringify(r))}'>
-        ${isFranchise ? 'Add franchise' : 'Add title'}
-      </button>
-    </div>`;
-    }
-
-    async function addResult(r, src) {
-      const u = activeUniverse();
-      if (!u) { setStatus('Create or select a universe first.', true); return; }
-      const isFranchise = src === 'collection' || src === 'animechain';
-      setStatus(isFranchise ? 'Expanding franchise…' : 'Adding…');
-      try {
-        const body = isFranchise
-          ? { uid: u.id, source: { type: src, id: r.id } }
-          : { uid: u.id, items: [r] };
-        state = await api('/api/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        renderAll();
-        setStatus('Added to "' + u.name + '".');
-      } catch (e) {
-        setStatus(e.message, true);
-      }
-    }
-
-    async function refreshAll() {
-      setStatus('Refreshing tracked franchises…');
-      try {
-        state = await api('/api/refresh');
-        renderAll();
-        setStatus('Refreshed.');
-      } catch (e) {
-        setStatus(e.message, true);
-      }
-    }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    }
-    function escapeAttr(s) { return escapeHtml(s).replace(/`/g, '&#96;'); }
-
-    $('#createUniverseBtn').onclick = createUniverse;
-    $('#newUniverseName').addEventListener('keydown', e => { if (e.key === 'Enter') createUniverse(); });
-    $('#searchBtn').onclick = runSearch;
-    $('#searchQuery').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
-    $('#refreshBtn').onclick = refreshAll;
-
-    loadData();
+    (async () => { showName(); try { S = await api('/api/data'); counts() } catch (e) { toast('Cannot reach server: ' + e.message, 1) } trending() })();
   </script>
 </body>
 

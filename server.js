@@ -14,9 +14,9 @@ const T = (p, q = {}) => {
 };
 const J = async p => { await sleep(450); return get('https://api.jikan.moe/v4' + p); }; // Jikan rate limit
 
-const mMovie = m => ({ id: 'tm' + m.id, n: m.title, date: m.release_date || '', k: 'Movie', s: m.overview || '' });
+const mMovie = m => ({ id: 'tm' + m.id, n: m.title, date: m.release_date || '', k: 'Movie', s: m.overview || '', p: m.poster_path ? 'https://image.tmdb.org/t/p/w342' + m.poster_path : '' });
+const mAni = a => ({ id: 'an' + a.mal_id, n: a.title_english || a.title, date: ((a.aired && a.aired.from) || '').slice(0, 10), k: 'Anime', s: (a.synopsis || '').slice(0, 450), p: a.images?.jpg?.image_url || '' });
 const mTv = m => ({ id: 'tv' + m.id, n: m.name, date: m.first_air_date || '', k: 'Series', s: m.overview || '' });
-const mAni = a => ({ id: 'an' + a.mal_id, n: a.title_english || a.title, date: ((a.aired && a.aired.from) || '').slice(0, 10), k: 'Anime', s: (a.synopsis || '').slice(0, 450) });
 
 async function search(src, q) {
   if (src == 'movie') return (await T('/search/movie', { query: q })).results.slice(0, 8).map(mMovie);
@@ -76,6 +76,9 @@ http.createServer(async (req, res) => {
       merge(un, items); save(d); return send(200, d);
     }
     if (u.pathname == '/api/refresh') { await refresh(); return send(200, load()); }
+    const G = { romcom: '35,10749', comedy: 35, horror: 27, thriller: 53, mystery: 9648, action: 28, 'sci-fi': 878, romance: 10749 };
+    if (u.pathname == '/api/trending') return send(200, (await T('/trending/movie/week')).results.slice(0, 12).map(mMovie));
+    if (u.pathname == '/api/genre') { const g = u.searchParams.get('g'); return send(200, g == 'anime' ? (await J('/top/anime?limit=12')).data.map(mAni) : (await T('/discover/movie', { with_genres: G[g], sort_by: 'popularity.desc' })).results.slice(0, 12).map(mMovie)); }
     send(404, { error: 'Not found' });
   } catch (e) { console.error(e); send(500, { error: e.message }); }
 }).listen(PORT, () => console.log('Open http://localhost:' + PORT));
